@@ -25,7 +25,7 @@ export default function Page() {
                     <li className="text-md">Contact</li>
                 </ul>
                 <div className="flex gap-4">
-                    <Button onClick={() => router.push("/dashboard")}>Se connecter</Button>
+                    <Button className="bg-[#77FFB2] text-black" onClick={() => router.push("/connexion")}>Se connecter</Button>
                 </div>
             </nav>
 
@@ -37,8 +37,10 @@ export default function Page() {
                 </p>
 
                 <div className="flex gap-4 mt-10">
-                    <Button>C’est partie !</Button>
-                    <Button>Comment ça marche ?</Button>
+                    <Button className="bg-[#77FFB2] text-black">C’est partie !</Button>
+                    <Button className="bg-white text-black shadow-sm">
+                    Comment ça marche ?
+                    </Button>
                 </div>
             </div>
 
@@ -98,7 +100,7 @@ export default function Page() {
                         Créer une app accessible, douce, utile, qui ne complique pas les choses mais qui les rend plus faciles. 
                         Parce qu’un simple rappel au bon moment, ça peut vraiment faire la différence.
                     </p>
-                    <Button className="w-fit self-start">C’est partie !</Button>
+                    <Button className="w-fit self-start bg-[#77FFB2] text-black">C’est partie !</Button>
                 </div>
             </div>
 
@@ -176,7 +178,7 @@ export default function Page() {
                                 <input type="text" placeholder="Nom" className="border-b border-black p-2" />
                                 <input type="email" placeholder="Email" className="border-b border-black p-2" />
                                 <textarea placeholder="Message" className="border-b border-black p-2"></textarea>
-                                <Button type="submit" className="w-fit self-start">Envoyer</Button>
+                                <Button type="submit" className="w-fit self-start bg-[#77FFB2] text-black">Envoyer</Button>
                             </form>
                         </CardContent>
                     </Card>

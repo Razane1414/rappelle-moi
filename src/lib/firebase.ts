@@ -1,7 +1,7 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth"; 
 
-// Configuration de Firebase (depuis ta console Firebase)
 const firebaseConfig = {
   apiKey: "AIzaSyAIc3uyyoyeLCenPyPcEP26D3LfB0IWWAc",
   authDomain: "rappelle-moi-c17e6.firebaseapp.com",
@@ -11,8 +11,8 @@ const firebaseConfig = {
   appId: "1:942639587881:web:5a6baf25404404a87f3238"
 };
 
-// Initialiser Firebase
-const app = initializeApp(firebaseConfig);
+// Initialiser Firebase une seule fois
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-// Initialiser Firestore
 export const db = getFirestore(app);
+export const auth = getAuth(app); 

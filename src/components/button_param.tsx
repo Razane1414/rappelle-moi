@@ -1,5 +1,5 @@
-// components/button_param.js
-import { Button } from "../components/ui/button";
+"use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +8,16 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 
-export function Param({ onDelete, id }) {
+
+
+export function Param({ onModif ,onDelete, id }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button>Param</Button>
+      <DropdownMenuTrigger asChild className="cursor-pointer px-6">
+        <img src="../icon/param.png" alt="button param" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuItem>Modifier</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onModif(id)}>Modifier</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => onDelete(id)}>Supprimer</DropdownMenuItem>
       </DropdownMenuContent>
