@@ -1,8 +1,8 @@
 "use client";
 
-import { db } from "../../../src/lib/firebase";
+import { auth, db } from "../../../src/lib/firebase";
 import { collection, addDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
     AlertDialog,
@@ -16,11 +16,14 @@ import {
   } from "../../../src/components/ui/alert-dialog"
 import { Button } from "../../../src/components/ui/button";
 import { Card, CardHeader } from "../../../src/components/ui/card";
+import useCurrentUser from "../../../src/hook/user_verif";
 
 export default function MedicamentForm() {
+  const { user, loading } = useCurrentUser(); 
   const [name, setName] = useState("");
   const [time, setTime] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const router = useRouter();
 
 
@@ -28,10 +31,14 @@ export default function MedicamentForm() {
   const searchParams = useSearchParams();
   const medicamentId = searchParams.get("id");
 
+  // on utilise useEffect pour récupérer le médicament à modifier
   useEffect(() => {
+
     if (medicamentId) {
       // ici on cherche le médicament dans la base de données
       const fetchMedicament = async () => {
+        if (loading || !user) return;
+
         const medicamentRef = doc(db, "medicaments", medicamentId);
         const medicamentDoc = await getDoc(medicamentRef);
         if (medicamentDoc.exists()) {
@@ -44,11 +51,11 @@ export default function MedicamentForm() {
       };
       fetchMedicament();
     }
-  }, [medicamentId]);
+  }, [medicamentId, loading, user]); // reexécuter quand l'utilisateur est défini
 
+  // fonction pour ajouter ou modifier un médicament
   const medicamentFn = async (e) => {
     e.preventDefault();
-
     if (medicamentId) {
       // si on a un ID, on modifie le médicament
       const medicamentRef = doc(db, "medicaments", medicamentId);
@@ -67,6 +74,7 @@ export default function MedicamentForm() {
         nom: name,
         heure: time,
         pris: false,
+        uid: user.uid,
       })
       .then(() => {
         setIsModalOpen(true); // ouvrir la modale

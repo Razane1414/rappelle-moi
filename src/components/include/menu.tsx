@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Card } from "../ui/card";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import Deconnexion from "../deconnexion";
 
 const iconpath = [
   { src: "/icon/menu/accueil_black.png", path: "/dashboard" },
@@ -85,13 +86,10 @@ const activeIndex = hovered ?? iconpath.findIndex((item) =>
         </div>
       </Card>
 
-      <Card className="bg-[#407BFF] rounded-full p-2 w-15 h-15 flex items-center justify-center" >
-        <img
-          src="/icon/menu/deconnexion.png"
-          alt="Icon deconnexion"
-          className="w-6 h-6 object-contain"
-        />
-      </Card>
+
+      {/* <Deconnexion /> */}
+      < Deconnexion />
     </div>
+
   );
 }

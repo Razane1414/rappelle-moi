@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
 import "../../src/lib/firebase"; 
 import { Button } from "../../src/components/ui/button";
 
 export default function Inscription() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const auth = getAuth();
+  const provider = new GoogleAuthProvider();  // on importe le provider Google pour l'authentification
+
 
   const inscriptionFn = (e) => {
     e.preventDefault();
@@ -18,7 +21,12 @@ export default function Inscription() {
       .then((userCredential) => {
         // Inscription réussie
         const user = userCredential.user;
-        router.push("/dashboard"); // redirection après inscription
+        // Met à jour le profil avec le username
+        return updateProfile(user, {
+          displayName: username,
+        }).then(() => {
+          router.push("/dashboard");
+    });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -26,6 +34,18 @@ export default function Inscription() {
         console.error("Erreur d'inscription :", errorCode, errorMessage);
       });
   };
+
+  const connexionGoogle = () => {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      const user = result.user;
+      router.push("/dashboard"); // redirection après connexion
+    })
+    .catch((error) => {
+      console.error("Erreur de connexion Google :", error.code, error.message);
+    });
+};
+
 
   return (
     <div
@@ -89,8 +109,8 @@ export default function Inscription() {
             type="text"
             placeholder="Nom d'utilisateur"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="p-3 border rounded-xl w-full"
           />
           <input
@@ -114,7 +134,8 @@ export default function Inscription() {
           </button>
 
           <div className="border-t border-gray-300 my-4"></div>
-          <Button className="bg-white text-blac border border-gray-600 w-full justify-center hover:bg-gray-100 cursor-pointer">
+          <Button className="bg-white text-blac border border-gray-600 w-full justify-center hover:bg-gray-100 cursor-pointer"
+          onClick={connexionGoogle}>
             <img src="icon/google-logo.png" alt="google"
             className="w-5 h-5 "/>
             Google

@@ -6,11 +6,14 @@ import { Card, CardContent, CardHeader } from "../../../src/components/ui/card";
 import { Param } from "../../../src/components/button_param";
 import { deleteDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import useCurrentUser from "../../../src/hook/user_verif";
 
 export default function ListMedic() {
-
+    const { user, loading } = useCurrentUser();// on utilise le hook pour vérifier si l'utilisateur est connecté
     const router = useRouter();
     const [medicaments, setMedicaments] = useState([]);
+
+    // fonction pour supprimer un médicament
     const supprimerMedicament = async (id) => {
         try {
             const medicamentDoc = doc(db, "medicaments", id); // on crée une référence au document à supprimer
@@ -20,25 +23,32 @@ export default function ListMedic() {
             console.error("Erreur lors de la suppression du médicament :", error);
         }
     };
+    // fonction pour modifier un médicament
     const modificationMedicament = (id) => {
         router.push(`add_medicament?id=${id}`); // on redirige vers la page d'ajout de médicament avec l'ID du médicament à modifier
     }
     
+    
+    // fonction pour récupérer les médicaments
     useEffect(() => {
+        if (loading || !user) return; // si l'utilisateur n'est pas connecté, on ne fait rien
+        
         const fetchMedicaments = async () => {
             try {
                 const getMedicaments = await getDocs(collection(db, "medicaments"));
-                const medicamentsData = getMedicaments.docs.map((doc) => ({ //parcourir les docs 
-                    id: doc.id, // on récupère l'ID aussi
-                    ...doc.data(),  // et toutes les données du médicament
-                })); 
-                setMedicaments(medicamentsData); // on met à jour l'état avec les données récupérées
+                const medicamentsData = getMedicaments.docs
+                    .map((doc) => ({ id: doc.id, ...doc.data() }))
+                    .filter((med) => med.uid === user.uid); // filtrer par utilisateur connecté
+                setMedicaments(medicamentsData);
             } catch (error) {
                 console.error("Erreur lors de la récupération des médicaments :", error);
             }
         };
         fetchMedicaments();  // on appelle la fonction pour récupérer les médicaments
-    }, []); //l'effet ne s'exécute qu'une seule fois au chargement
+    }, [user, loading]); //l'effet ne s'exécute qu'une seule fois au chargement
+
+
+    
 
     return (
         <div className="flex flex-col w-full">

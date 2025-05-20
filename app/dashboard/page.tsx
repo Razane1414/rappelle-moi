@@ -2,50 +2,38 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../../src/components/ui/card";
 
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, query, where } from "firebase/firestore";
 import { db } from "../../src/lib/firebase";
 import { useRouter } from "next/navigation";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import useCurrentUser from "../../src/hook/user_verif";
 
 export default function Dashboard() {
+    const { user, loading } = useCurrentUser(); // on utilise le hook pour vérifier si l'utilisateur est connecté
     const [medicaments, setMedicaments] = useState([]);
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
     const router = useRouter();
-
-
-    // verifier si l'utilisateur est connecté
-      useEffect(() => {
-    const auth = getAuth();
-    const stopObserver = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) { //si l'utilisateur est connecté
-        setUser(firebaseUser); // on met à jour l'état avec l'utilisateur connecté
-      } else {
-        router.push("/connexion"); // sinon on le redirige vers la page de connexion
-      }
-      setLoading(false);
-    });
-
-    return () => stopObserver(); // stop l'observateur quand le composant est démonté
-  }, [router]);
-
+    const vapidKey = "BMxzMEsuvC_xvHVg5FfHOcHSAxrwdThF6fAZKA0-X-hHpkgCeXXy9EeIyO4-HN54Sd-xJrtj2HP0_k2qTV0Wvh4"; // clé publique VAPID pour les notifications push
 
     useEffect(() => {
-        const fetchMedicaments = async () => {
-            try {
-                const getMedicaments = await getDocs(collection(db, "medicaments"));
-                const medicamentsData = getMedicaments.docs.map((doc) => ({ //parcourir les docs 
-                    id: doc.id, // on récupère l'ID aussi
-                    ...doc.data(),  // et toutes les données du médicament
-                }));
-                setMedicaments(medicamentsData); // on met à jour l'état avec les données récupérées
-            } catch (error) {
-                console.error("Erreur lors de la récupération des médicaments :", error);
-            }
-        };
-        fetchMedicaments();  // on appelle la fonction pour récupérer les médicaments
-    }, []); //l'effet ne s'exécute qu'une seule fois au chargement
+    const fetchMedicaments = async () => {
+        if (loading || !user) return;
+        try {
+        const q = query(
+            collection(db, "medicaments"),
+            where("uid", "==", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
+        const medicamentsData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        setMedicaments(medicamentsData);
+        } catch (error) {
+        console.error("Erreur lors de la récupération des médicaments :", error);
+        }
+    };
 
+    fetchMedicaments();
+    }, [user, loading]); // reexécuter quand l'utilisateur est défini
 
     // fonction pour marquer le medicament comme pris
     const medicamenPris = async (id) => {
@@ -71,7 +59,7 @@ export default function Dashboard() {
         <div className="">
             <div className="flex flex-col w-full h-full">
                 <h3 className="text-4xl mb-[2%] relative z-10">
-                    <span className="font-bold">Salut maman ! <br /></span>
+                    <span className="font-bold">Salut {user?.displayName?.split(" ")[0] || ""} !  <br /></span>
                     Tu as pris tes médicaments ?
                 </h3>
                 <div className="flex gap-5 relative z-10">
