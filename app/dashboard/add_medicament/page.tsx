@@ -27,24 +27,23 @@ export default function MedicamentForm() {
   const router = useRouter();
 
 
-  // pour la modification
-  const searchParams = useSearchParams();
-  const medicamentId = searchParams.get("id");
-
+  // pre remplir le formulaire si on modifie un médicament
+  // on utilise useSearchParams pour récupérer l'ID du médicament à modifier
+  const searchParams = useSearchParams(); // on utilise useSearchParams pour récupérer l'ID du médicament à modifier
+  const medicamentId = searchParams.get("id"); 
   // on utilise useEffect pour récupérer le médicament à modifier
   useEffect(() => {
-
     if (medicamentId) {
       // ici on cherche le médicament dans la base de données
       const fetchMedicament = async () => {
         if (loading || !user) return;
 
-        const medicamentRef = doc(db, "medicaments", medicamentId);
+        const medicamentRef = doc(db, "medicaments", medicamentId); 
         const medicamentDoc = await getDoc(medicamentRef);
         if (medicamentDoc.exists()) {
-          const medicamentData = medicamentDoc.data();
-          setName(medicamentData.nom);
-          setTime(medicamentData.heure);
+          const medicamentData = medicamentDoc.data(); 
+          setName(medicamentData.nom); // on met à jour le nom du médicament
+          setTime(medicamentData.heure); // on met à jour l'heure du médicament
         } else {
           console.log("Aucun médicament trouvé avec cet ID");
         }
@@ -53,13 +52,14 @@ export default function MedicamentForm() {
     }
   }, [medicamentId, loading, user]); // reexécuter quand l'utilisateur est défini
 
+
   // fonction pour ajouter ou modifier un médicament
   const medicamentFn = async (e) => {
     e.preventDefault();
     if (medicamentId) {
       // si on a un ID, on modifie le médicament
       const medicamentRef = doc(db, "medicaments", medicamentId);
-      await updateDoc(medicamentRef, {
+      await updateDoc(medicamentRef, { // on met à jour le médicament
         nom: name,
         heure: time,
       })

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
+import {  createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
+import { auth } from "../../src/lib/firebase"; 
 import "../../src/lib/firebase"; 
 import { Button } from "../../src/components/ui/button";
 
@@ -11,14 +12,13 @@ export default function Inscription() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-  const auth = getAuth();
   const provider = new GoogleAuthProvider();  // on importe le provider Google pour l'authentification
 
 
   const inscriptionFn = (e) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+    createUserWithEmailAndPassword(auth, email, password) // la fonction createUserWithEmailAndPassword de firebase pour créer un utilisateur
+      .then((userCredential) => { 
         // Inscription réussie
         const user = userCredential.user;
         // Met à jour le profil avec le username
@@ -35,8 +35,8 @@ export default function Inscription() {
       });
   };
 
-  const connexionGoogle = () => {
-  signInWithPopup(auth, provider)
+  const connexionGoogle = () => { 
+  signInWithPopup(auth, provider) //   la fonction signInWithPopup de firebase pour se connecter avec Google
     .then((result) => {
       const user = result.user;
       router.push("/dashboard"); // redirection après connexion

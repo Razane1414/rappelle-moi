@@ -2,19 +2,20 @@
 import { useRouter } from "next/navigation";    
 import { useState } from "react";
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth } from "../../src/lib/firebase";
+import { auth } from "../../src/lib/firebase"; 
 import { Button } from "../../src/components/ui/button";
 
 
 export default function Connexion() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     const provider = new GoogleAuthProvider();  // on importe le provider Google pour l'authentification
 
     const connexionFn = (e) => {
     e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(auth, email, password) // la fonction signInWithEmailAndPassword de firebase pour se connecter
         .then((userCredential) => {
         // Connexion réussie
         const user = userCredential.user;
@@ -30,16 +31,19 @@ export default function Connexion() {
 
 
     // google connect
-    
-    const connexionGoogle = () => {
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                const user = result.user;
-                router.push("/dashboard"); // redirection après connexion
-            })
-            .catch((error) => {
-                console.error("Erreur de connexion Google :", error.code, error.message);
-            });
+    const connexionGoogle = async () => {
+        if (loading) return; //afin de ne pas lancer plusieurs fois la fonction
+        setLoading(true);
+
+        try {
+            const result = await signInWithPopup(auth, provider); //   la fonction signInWithPopup de firebase pour se connecter avec Google
+            const user = result.user;
+            router.push("/dashboard");
+        } catch (error) {
+            console.error("Erreur de connexion Google :", error.code || error.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

@@ -37,7 +37,7 @@ export default function ListMedic() {
             try {
                 const getMedicaments = await getDocs(collection(db, "medicaments"));
                 const medicamentsData = getMedicaments.docs
-                    .map((doc) => ({ id: doc.id, ...doc.data() }))
+                    .map((doc) => ({ id: doc.id, ...doc.data() })) // on récupère les données des médicaments
                     .filter((med) => med.uid === user.uid); // filtrer par utilisateur connecté
                 setMedicaments(medicamentsData);
             } catch (error) {

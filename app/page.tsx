@@ -9,13 +9,13 @@ export default function Page() {
       <div className="">
         {/* hero section here */}
         <div className="h-screen rounded-2xl m-5 flex flex-col relative overflow-hidden"   style={{ boxShadow: '0 12px 24px rgba(0, 0, 0, 0.15)' }}>
-            {/* Blobs en fond */}           
+            {/* blobs en fond */}           
             <div className="absolute bottom-0 left-0 w-full h-64 bg-[#88CDFF] rounded-full blur-3xl opacity-70 z-0 transform scale-x-150"></div>
             <div className="absolute bottom-15 -left-10 w-96 h-96 bg-[#77FFB2] rounded-full blur-3xl opacity-70 z-0"></div>
             <div className="absolute bottom-15 -right-10 w-96 h-96 bg-[#77FFB2] rounded-full blur-3xl opacity-70 z-0"></div>
             <div className="absolute top-0 left-0 w-full h-64 bg-[#88CDFF] rounded-full blur-3xl opacity-15 z-0 transform "></div>
 
-
+            {/* navbar HERE */}
             <nav className="flex justify-between items-center py-4 px-10  relative z-10">
                 <h1 className="text-2xl font-bold">Rappelle-Moi.</h1>
                 <ul className="flex gap-4">
@@ -25,10 +25,11 @@ export default function Page() {
                     <li className="text-md">Contact</li>
                 </ul>
                 <div className="flex gap-4">
-                    <Button className="bg-[#77FFB2] text-black" onClick={() => router.push("/connexion")}>Se connecter</Button>
+                    <Button className="bg-[#77FFB2] text-black hover:text-white" onClick={() => router.push("/dashboard")}>Se connecter</Button>
                 </div>
             </nav>
 
+            {/* hero content HERE */}
             <div className="flex flex-col items-center justify-center flex-grow relative z-10">
                 <h2 className="text-4xl font-bold ">Rappelle-Moi : Ne ratez plus jamais un médicament.</h2>
                 <p className="my-4 text-lg">
@@ -37,8 +38,8 @@ export default function Page() {
                 </p>
 
                 <div className="flex gap-4 mt-10">
-                    <Button className="bg-[#77FFB2] text-black">C’est partie !</Button>
-                    <Button className="bg-white text-black shadow-sm">
+                    <Button className="bg-[#77FFB2] text-black hover:text-white" onClick={() => router.push("/dashboard")}>C’est partie !</Button>
+                    <Button className="bg-white text-black shadow-sm hover:text-white" onClick={() => router.push("#about")}>
                     Comment ça marche ?
                     </Button>
                 </div>
@@ -87,23 +88,24 @@ export default function Page() {
 
         <div className="mx-[10%] mt-[5%] flex flex-col">
             {/* A propos HERE*/}
-            <div className="flex flex-row my-[10%] gap-20">
-                <div className="w-1/3 ">
-                    <img src="img/oublie.png" alt="medicament" className="h-full"/>
+            <section id="about">
+                <div className="flex flex-row my-[10%] gap-20">
+                    <div className="w-1/3 ">
+                        <img src="img/oublie.png" alt="medicament" className="h-full"/>
+                    </div>
+                    <div className="w-2/3 flex flex-col">
+                        <h2 className="text-4xl font-bold">Ne ratez plus jamais un médicament.</h2>
+                        <p className="my-4 text-lg max-w-2xl">
+                            Tout a commencé avec ma mère, qui oubliait souvent de prendre ses médicaments.Rien de grave… sauf quand ça devient quotidien. 
+                            Il fallait lui rappeler,et souvent vérifier. Et je me suis dit : “Pourquoi ne pas créer une application simple, faite pour elle ?”
+                            Rappelle-Moi est né de là. Un projet personnel, que j’ai construit dans le cadre de mes études, avec une idée claire :
+                            Créer une app accessible, douce, utile, qui ne complique pas les choses mais qui les rend plus faciles. 
+                            Parce qu’un simple rappel au bon moment, ça peut vraiment faire la différence.
+                        </p>
+                        <Button className="w-fit self-start bg-[#77FFB2] text-black hover:text-white" onClick={()=> router.push("/dashboard")}>C’est partie !</Button>
+                    </div>
                 </div>
-                <div className="w-2/3 flex flex-col">
-                    <h2 className="text-4xl font-bold">Ne ratez plus jamais un médicament.</h2>
-                    <p className="my-4 text-lg max-w-2xl">
-                        Tout a commencé avec ma mère, qui oubliait souvent de prendre ses médicaments.Rien de grave… sauf quand ça devient quotidien. 
-                        Il fallait lui rappeler,et souvent vérifier. Et je me suis dit : “Pourquoi ne pas créer une application simple, faite pour elle ?”
-                        Rappelle-Moi est né de là. Un projet personnel, que j’ai construit dans le cadre de mes études, avec une idée claire :
-                        Créer une app accessible, douce, utile, qui ne complique pas les choses mais qui les rend plus faciles. 
-                        Parce qu’un simple rappel au bon moment, ça peut vraiment faire la différence.
-                    </p>
-                    <Button className="w-fit self-start bg-[#77FFB2] text-black">C’est partie !</Button>
-                </div>
-            </div>
-
+            </section>
             {/* fonctionnalité */}
             <Card className="bg-gradient-to-b from-[#88C8FF] to-[#ffffff] my-[5%]">
                 <CardContent className="flex flex-row justify-between items-center gap-4 items-stretch">

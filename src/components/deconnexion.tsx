@@ -11,7 +11,7 @@ export default function Deconnexion() {
 
     // fonction pour se déconnecter
     const deconnexion = () => {
-        signOut(auth)
+        signOut(auth) // on utilise la fonction signOut de firebase pour se deco
             .then(() => {
                 router.push("/connexion");
             })
@@ -21,11 +21,11 @@ export default function Deconnexion() {
     };
 
     return (
-      <Card className="bg-[#407BFF] rounded-full p-2 w-15 h-15 flex items-center justify-center cursor-pointor" onClick={deconnexion}>
+      <Card className="bg-[#407BFF] rounded-full p-2 w-15 h-15 flex items-center justify-center" onClick={deconnexion}>
         <img
           src="/icon/menu/deconnexion.png"
           alt="Icon deconnexion"
-          className="w-6 h-6 object-contain "
+          className="w-6 h-6 object-contain cursor-pointer "
         />
       </Card>
     );

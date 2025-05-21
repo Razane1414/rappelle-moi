@@ -11,29 +11,35 @@ export default function Dashboard() {
     const { user, loading } = useCurrentUser(); // on utilise le hook pour vérifier si l'utilisateur est connecté
     const [medicaments, setMedicaments] = useState([]);
     const router = useRouter();
-    const vapidKey = "BMxzMEsuvC_xvHVg5FfHOcHSAxrwdThF6fAZKA0-X-hHpkgCeXXy9EeIyO4-HN54Sd-xJrtj2HP0_k2qTV0Wvh4"; // clé publique VAPID pour les notifications push
 
     useEffect(() => {
-    const fetchMedicaments = async () => {
-        if (loading || !user) return;
-        try {
-        const q = query(
-            collection(db, "medicaments"),
-            where("uid", "==", user.uid)
-        );
-        const querySnapshot = await getDocs(q);
-        const medicamentsData = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-        setMedicaments(medicamentsData);
-        } catch (error) {
-        console.error("Erreur lors de la récupération des médicaments :", error);
+        if (!loading && !user) {
+            router.push("/connexion");
         }
-    };
+    }, [user, loading, router]);
 
-    fetchMedicaments();
-    }, [user, loading]); // reexécuter quand l'utilisateur est défini
+       useEffect(() => {
+        const fetchMedicaments = async () => {
+            if (!user) return;
+            try {
+                const q = query(collection(db, "medicaments"), where("uid", "==", user.uid)); // on récupère les médicaments de l'utilisateur connecté grc à id
+                const querySnapshot = await getDocs(q);
+                const medicamentsData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id, // on récupère l'id du médicament
+                    ...doc.data(), // on récupère les données du médicament
+                }));
+                setMedicaments(medicamentsData);
+            } catch (error) {
+                console.error("Erreur lors de la récupération des médicaments :", error);
+            }
+        };
+
+        fetchMedicaments();
+    }, [user]);
+
+    if (loading || !user) {
+        return null;
+    }
 
     // fonction pour marquer le medicament comme pris
     const medicamenPris = async (id) => {
